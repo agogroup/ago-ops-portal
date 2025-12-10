@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* タイムチャート用のカスタムスタイル */
+.time-chart-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.time-chart-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.time-chart-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.time-chart-scroll::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+/* 現在時刻の線 */
+.current-time-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #EF4444;
+  z-index: 10;
+}
+
+.current-time-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  background-color: #EF4444;
+  border-radius: 50%;
+}
