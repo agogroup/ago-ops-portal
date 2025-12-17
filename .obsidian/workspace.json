@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/mockups.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "mockups"
+              "title": "README"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/mockups.md",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "mockupsへのバックリンク"
+              "title": "READMEへのバックリンク"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "docs/mockups.md",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "mockupsからのアウトゴーイングリンク"
+              "title": "READMEからのアウトゴーイングリンク"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/mockups.md",
+                "file": "README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "mockupsのアウトライン"
+              "title": "READMEのアウトライン"
             }
           }
         ]
@@ -185,6 +185,7 @@
   },
   "active": "fa92b9a6e1018a71",
   "lastOpenFiles": [
+    "docs/mockups.md",
     "dist/assets/index-DmGc-W-2.js",
     "src/components/TimeChart/TimeChart.tsx.tmp.87550.1765333990142",
     "src/components/TimeChart/ScheduleItem.tsx.tmp.87550.1765333924328",
@@ -195,7 +196,6 @@
     "src/components/TimeChart/WeekChart.tsx.tmp.87550.1765333024454",
     "dist/assets/index-BJruOlTw.js",
     "dist/assets/index-DT1Ni8u2.css",
-    "src/components/ContactList/index.ts",
     "node_modules/typescript/SECURITY.md",
     "node_modules/typescript/README.md",
     "node_modules/caniuse-lite/README.md",

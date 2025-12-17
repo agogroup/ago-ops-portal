@@ -7,27 +7,58 @@
 
 ---
 
+## 実装状況（2025-12-10 時点）
+
+### Phase 1 完了機能
+
+| 機能 | 状態 | 備考 |
+|------|------|------|
+| タイムチャート（日別） | ✅ 完了 | 24時間表示、横スクロール対応 |
+| タイムチャート（週間） | ✅ 完了 | 月〜日の7日間表示 |
+| 日付切替 | ✅ 完了 | 前日/翌日、日付ピッカー |
+| 日別/週間表示の切替 | ✅ 完了 | タブで切替 |
+| セルタップで詳細表示 | ✅ 完了 | モーダル表示 |
+| ドラッグ&ドロップ（時間変更） | ✅ 完了 | 15分スナップ |
+| ドラッグ&ドロップ（担当者変更） | ✅ 完了 | 日別・週間両対応 |
+| リサイズ（開始/終了時間変更） | ✅ 完了 | 左端/右端ドラッグ |
+| 現在時刻の縦線 | ✅ 完了 | 当日のみ表示 |
+| 新規スケジュール追加 | ✅ 完了 | フォーム実装済 |
+| 現場一覧画面 | ✅ 完了 | 検索・フィルタ機能付き |
+| 連絡先検索画面 | ✅ 完了 | 作業種別フィルタ付き |
+| 下部ナビゲーション | ✅ 完了 | 4タブ構成 |
+
+---
+
 ## 画面レイアウト
 
-### タイムチャート
+### タイムチャート（日別）
 
 - **縦軸**: 会社/担当者（TEKO、トラ、三十興業、S-TEC、神城電気など）
 - **横軸**: 24時間（0:00〜24:00）を1時間刻みで表示
 - **セル内**: 現場名と作業種別を表示
 - **横スクロール可能**: スマホ画面で全時間帯を確認できるように
 
-### 必須機能
+### タイムチャート（週間）
 
-1. **日付切替**: 前日/翌日ボタン、または日付ピッカー
-2. **日別/週間表示の切替**
-3. **セルタップで詳細表示**
-4. **新規スケジュール追加ボタン**
-5. **ドラッグ&ドロップでスケジュール移動**
-   - スケジュールアイテムを長押しでドラッグ開始
-   - 横方向にドラッグして時間を変更（例：10:00→13:00）
-   - ドロップ位置に応じてtimeStart/timeEndを自動更新
-   - スマホのタッチ操作に対応（touch events）
-6. **現在時刻を示す縦線を表示**
+- **縦軸**: 会社/担当者
+- **横軸**: 月曜〜日曜の7日間
+- **セル内**: 現場名と時間帯を表示
+
+### 操作方法
+
+#### 日別ビュー
+| 操作 | 動作 |
+|------|------|
+| アイテム中央をドラッグ | 時間変更 + 別の担当者に移動 |
+| アイテム左端をドラッグ | 開始時間を変更 |
+| アイテム右端をドラッグ | 終了時間を変更 |
+| アイテムをタップ | 詳細モーダル表示 |
+
+#### 週間ビュー
+| 操作 | 動作 |
+|------|------|
+| アイテムをドラッグ | 別の日・別の担当者に移動 |
+| アイテムをタップ | 詳細モーダル表示 |
 
 ---
 
@@ -45,7 +76,7 @@
 
 ## サンプルデータ
 
-開発時に使用するダミーデータ：
+開発時に使用するダミーデータ（`src/data/sampleData.ts`）：
 
 ```typescript
 const sampleData = {
@@ -64,11 +95,7 @@ const sampleData = {
   ],
   schedules: [
     { companyId: 1, siteId: 1, date: '2025-12-09', timeStart: '09:00', timeEnd: '12:00', workType: 'garbage' },
-    { companyId: 1, siteId: 4, date: '2025-12-09', timeStart: '14:00', timeEnd: '17:00', workType: 'garbage' },
-    { companyId: 2, siteId: 1, date: '2025-12-09', timeStart: '09:00', timeEnd: '18:00', workType: 'management' },
-    { companyId: 3, siteId: 3, date: '2025-12-09', timeStart: '13:00', timeEnd: '20:00', workType: 'interior' },
-    { companyId: 4, siteId: 4, date: '2025-12-09', timeStart: '08:00', timeEnd: '15:00', workType: 'demolition' },
-    { companyId: 5, siteId: 4, date: '2025-12-09', timeStart: '14:00', timeEnd: '18:00', workType: 'electrical' },
+    // ...
   ],
   workTypes: {
     garbage: { label: 'ゴミ回収', color: '#3B82F6' },
@@ -79,15 +106,6 @@ const sampleData = {
   }
 };
 ```
-
----
-
-## デザイン要件
-
-- **モバイルファースト**: スマホ画面幅を基準に設計
-- **下部固定ナビゲーション**: タイムチャート/現場/追加/連絡先の4タブ
-- **ダークモード対応**: 不要（Phase 1では対応しない）
-- **言語**: 日本語UI
 
 ---
 
@@ -103,60 +121,64 @@ const sampleData = {
 
 ---
 
-## ファイル構成（案）
+## ファイル構成（実装済み）
 
 ```
 src/
-├── main.tsx           # エントリーポイント
-├── App.tsx            # ルートコンポーネント
+├── main.tsx                          # エントリーポイント
+├── App.tsx                           # ルートコンポーネント
+├── vite-env.d.ts
 ├── components/
 │   ├── TimeChart/
-│   │   ├── TimeChart.tsx        # メインコンポーネント
-│   │   ├── TimeChartRow.tsx     # 会社ごとの行
-│   │   ├── ScheduleItem.tsx     # スケジュールアイテム
-│   │   └── TimeHeader.tsx       # 時間軸ヘッダー
+│   │   ├── index.ts
+│   │   ├── TimeChart.tsx             # 日別タイムチャート（D&D対応）
+│   │   ├── WeekChart.tsx             # 週間タイムチャート（D&D対応）
+│   │   ├── TimeChartRow.tsx          # 会社ごとの行
+│   │   ├── ScheduleItem.tsx          # スケジュールアイテム（リサイズ対応）
+│   │   └── TimeHeader.tsx            # 時間軸ヘッダー
 │   ├── Navigation/
-│   │   └── BottomNav.tsx        # 下部ナビゲーション
+│   │   ├── index.ts
+│   │   └── BottomNav.tsx             # 下部ナビゲーション
+│   ├── ScheduleForm/
+│   │   ├── index.ts
+│   │   └── ScheduleForm.tsx          # スケジュール追加フォーム
+│   ├── SiteList/
+│   │   ├── index.ts
+│   │   └── SiteList.tsx              # 現場一覧
+│   ├── ContactList/
+│   │   ├── index.ts
+│   │   └── ContactList.tsx           # 連絡先一覧
 │   └── common/
-│       └── DatePicker.tsx       # 日付選択
+│       ├── index.ts
+│       └── DatePicker.tsx            # 日付選択（日別/週間切替付き）
 ├── data/
-│   └── sampleData.ts            # サンプルデータ
+│   └── sampleData.ts                 # サンプルデータ
 ├── types/
-│   └── index.ts                 # 型定義
+│   └── index.ts                      # 型定義
 └── styles/
-    └── index.css                # Tailwind設定
+    └── index.css                     # Tailwind + カスタムCSS
 ```
 
 ---
 
-## 開発手順
-
-### Phase 1-1: プロジェクト初期化
+## 起動方法
 
 ```bash
-npm create vite@latest . -- --template react-ts
-npm install
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+cd /Volumes/HD-WLU3/ago-ops-portal
+npm install   # 初回のみ
+npm run dev   # 開発サーバー起動（http://localhost:5173）
+npm run build # 本番ビルド
 ```
 
-### Phase 1-2: タイムチャート基本実装
+---
 
-1. サンプルデータの作成
-2. TimeChartコンポーネント作成
-3. 横スクロール対応
-4. 色分け実装
+## Phase 2 で実装予定
 
-### Phase 1-3: 操作機能追加
-
-1. 日付切替
-2. セルタップ詳細表示
-3. ドラッグ&ドロップ
-
-### Phase 1-4: ナビゲーション追加
-
-1. 下部固定ナビゲーション
-2. 画面遷移の準備
+- [ ] Supabaseでのデータ永続化
+- [ ] ユーザー認証
+- [ ] 複数ユーザーでのリアルタイム同期
+- [ ] プッシュ通知（LINE連携）
+- [ ] ANDPAD PDF連携
 
 ---
 
@@ -173,4 +195,5 @@ npx tailwindcss init -p
 | 日付 | 内容 |
 |------|------|
 | 2025-12-08 | 初版作成（bolt-prompt.mdから変換） |
+| 2025-12-10 | Phase 1 実装完了、全機能の実装状況を記載 |
 

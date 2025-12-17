@@ -6,39 +6,45 @@ import { ScheduleForm } from './components/ScheduleForm';
 import { SiteList } from './components/SiteList';
 import { ContactList } from './components/ContactList';
 import type { ViewMode } from './components/common';
-import { companies, sites, schedules as initialSchedules, workTypes } from './data/sampleData';
+import { useCompanies, useSites, useSchedules } from './hooks';
+import { workTypes } from './data/sampleData';
 import type { Schedule, Site } from './types';
 
 function App() {
   const [activeTab, setActiveTab] = useState('timechart');
-  const [selectedDate, setSelectedDate] = useState('2025-12-09'); // サンプルデータに合わせた日付
+  const [selectedDate, setSelectedDate] = useState(() => {
+    return new Date().toISOString().split('T')[0];
+  });
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
-  const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules);
   const [viewMode, setViewMode] = useState<ViewMode>('day');
+
+  // Supabaseからデータ取得
+  const { companies, loading: companiesLoading } = useCompanies();
+  const { sites, loading: sitesLoading } = useSites();
+  const { schedules, loading: schedulesLoading, addSchedule, updateSchedule } = useSchedules();
+
+  const loading = companiesLoading || sitesLoading || schedulesLoading;
 
   const handleScheduleTap = (schedule: Schedule) => {
     setSelectedSchedule(schedule);
   };
 
   // スケジュール更新ハンドラ（ドラッグ&ドロップ時）
-  const handleScheduleUpdate = (updatedSchedule: Schedule) => {
-    setSchedules((prev) =>
-      prev.map((s) => (s.id === updatedSchedule.id ? updatedSchedule : s))
-    );
+  const handleScheduleUpdate = async (updatedSchedule: Schedule) => {
+    await updateSchedule(updatedSchedule);
   };
 
   // スケジュール追加ハンドラ
-  const handleAddSchedule = (newSchedule: Omit<Schedule, 'id'>) => {
-    const id = Math.max(...schedules.map((s) => s.id), 0) + 1;
-    setSchedules((prev) => [...prev, { ...newSchedule, id }]);
-    // 追加後にチャート画面に切り替え
-    setSelectedDate(newSchedule.date);
-    setActiveTab('timechart');
+  const handleAddSchedule = async (newSchedule: Omit<Schedule, 'id'>) => {
+    const added = await addSchedule(newSchedule);
+    if (added) {
+      setSelectedDate(newSchedule.date);
+      setActiveTab('timechart');
+    }
   };
 
   // 現場選択ハンドラ
   const handleSiteSelect = (site: Site) => {
-    // 現場の次のスケジュールがあればその日付に移動
     const today = new Date().toISOString().split('T')[0];
     const nextSchedule = schedules
       .filter((s) => s.siteId === site.id && s.date >= today)
@@ -61,6 +67,17 @@ function App() {
     const workType = workTypes[schedule.workType];
     return { company, site, workType };
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">読み込み中...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 pb-20">

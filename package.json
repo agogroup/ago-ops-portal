@@ -1,5 +1,5 @@
 {
-  "name": "ago-ops-portal",
+  "name": "teko-board",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.87.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
